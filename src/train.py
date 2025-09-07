@@ -1,19 +1,33 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-from joblib import dump
+from sklearn.model_selection import train_test_split
+import joblib
 
-def train_model(train_data_path):
-    df = pd.read_csv(train_data_path)
-    features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
-    X = df[features]
+def train_model():
+    # Load your dataset
+    df = pd.read_csv('data/train.csv')
+    # Example feature selection - modify as needed!
+    X = df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare']]
+    # Convert categorical columns
+    X = pd.get_dummies(X, columns=['Sex'])
     y = df['Survived']
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X, y)
-    dump(model, "model.joblib")
-    preds = model.predict(X)
-    acc = accuracy_score(y, preds)
-    print(f"Training accuracy: {acc:.3f}")
+    
+    # Fill missing values (simple strategy)
+    X = X.fillna(X.median())
+
+    # Split for validation (optional)
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Train model
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf.fit(X_train, y_train)
+
+    # Save model
+    joblib.dump(clf, 'data/model.joblib')
+    # Also save validation set for evaluation
+    X_val.to_csv('data/features.csv', index=False)
+    pd.DataFrame(y_val).to_csv('data/labels.csv', index=False)
+    print("Training complete and model saved!")
 
 if __name__ == "__main__":
-    train_model("data/train_processed.csv")
+    train_model()
