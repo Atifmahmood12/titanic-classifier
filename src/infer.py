@@ -1,15 +1,24 @@
 import pandas as pd
-from joblib import load
+import joblib
 
-def run_inference(test_data_path, model_path):
-    df = pd.read_csv(test_data_path)
-    features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
-    X = df[features]
-    model = load(model_path)
-    preds = model.predict(X)
-    df['Prediction'] = preds
-    df.to_csv("data/test_predictions.csv", index=False)
-    print("Predictions saved to data/test_predictions.csv")
+def run_inference(input_path='data/test.csv', output_path='data/predictions.csv'):
+    # Load test data
+    test_df = pd.read_csv(input_path)
+    # Example feature selection and preprocessing (modify as needed)
+    X_test = test_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare']]
+    X_test = pd.get_dummies(X_test, columns=['Sex'])
+    X_test = X_test.fillna(X_test.median())
+
+    # Load trained model
+    clf = joblib.load('data/model.joblib')
+
+    # Predict
+    preds = clf.predict(X_test)
+    test_df['Predicted'] = preds
+
+    # Save predictions
+    test_df.to_csv(output_path, index=False)
+    print(f"Inference complete. Predictions saved to {output_path}")
 
 if __name__ == "__main__":
-    run_inference("data/test_processed.csv", "model.joblib")
+    run_inference()
