@@ -6,7 +6,7 @@ import joblib
 
 def train_model():
     # Load your dataset
-    df = pd.read_csv('data/titanic.csv', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    df = pd.read_csv('data/train.csv', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     # Example feature selection - modify as needed!
     X = df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare']]
     # Convert categorical columns

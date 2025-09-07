@@ -1,6 +1,6 @@
 import pandas as pd
 
-def preprocess_data(input_path='data/raw_train.csv', output_path='data/train.csv'):
+def preprocess_data(input_path='data/titanic.csv', output_path='data/train.csv'):
     # Load raw data
     df = pd.read_csv(input_path)
 

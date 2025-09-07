@@ -1,3 +1,17 @@
+## Running the Full Pipeline
+
+To automate the entire workflow (data preprocessing, training, inference, evaluation, and visualization), use the provided pipeline script:
+
+```bash
+python run_pipeline.py
+```
+
+This script will:
+- Clean up any previously generated output files
+- Run all necessary scripts in sequence
+- Ensure a fresh start for each run
+
+You can modify the pipeline script to fit your custom workflow if needed.
 # Titanic Classifier
 
 This repository contains a simple machine learning pipeline for predicting survival on the Titanic dataset. It includes scripts for data preprocessing, model training, evaluation, inference, and visualization.
@@ -66,10 +80,39 @@ PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
 
 ## Usage
 
-1. **Preprocess data**
-
-   ```bash
    python src/data_prep.py
+## How the Model is Trained
+
+The Titanic survival model uses a Random Forest Classifier to learn patterns from passenger data. The process is:
+
+1. **Feature Preparation:**
+   - Selects columns: `Pclass`, `Sex`, `Age`, `SibSp`, `Parch`, `Fare`.
+   - Converts categorical columns (like `Sex`) to numeric using one-hot encoding (`get_dummies`).
+2. **Model Training:**
+   - The Random Forest algorithm builds many decision trees using the features and learns to predict the target (`Survived`).
+3. **Validation:**
+   - The data is split into training and validation sets to check model performance.
+4. **Saving the Model:**
+   - The trained model is saved for later inference.
+
+### Visual Representation
+Your features (after encoding with get_dummies) are fed into the Random Forest model.
+The model learns relationships between features and the target (Survived).
+After training, the model can predict survival for new passengers.
++-------------------+      +--------------------------+      +-------------------+
+|   Features (X)    | ---> | RandomForestClassifier   | ---> |   Prediction (y)  |
+|-------------------|      |--------------------------|      |-------------------|
+| Pclass            |      |  - Builds many trees     |      | Survived: 0 or 1  |
+| Sex_0, Sex_1      |      |  - Learns patterns       |      |                   |
+| Age               |      |  - Combines votes        |      |                   |
+| SibSp             |      |                          |      |                   |
+| Parch             |      |                          |      |                   |
+| Fare              |      |                          |      |                   |
+| Embarked          |      |                          |      |                   |
++-------------------+      +--------------------------+      +-------------------+
+
+```
++-------------------+      +--------------------------+      +-------------------+
    ```
 
 2. **Train model**
@@ -79,7 +122,10 @@ PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
    ```
 
 3. **Evaluate model**
++-------------------+      +--------------------------+      +-------------------+
 
+
+This diagram shows how passenger features are used to train the model, which then predicts survival.
    ```bash
    python src/evaluate.py
    ```
