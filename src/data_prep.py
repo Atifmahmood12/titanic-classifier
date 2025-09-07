@@ -1,22 +1,26 @@
 import pandas as pd
 
-def load_data(train_path, test_path):
-    train_df = pd.read_csv(train_path)
-    test_df = pd.read_csv(test_path)
-    return train_df, test_df
+def preprocess_data(input_path='data/raw_train.csv', output_path='data/train.csv'):
+    # Load raw data
+    df = pd.read_csv(input_path)
 
-def preprocess(df):
-    df = df.copy()
-    df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
-    df['Age'] = df['Age'].fillna(df['Age'].median())
-    df['Fare'] = df['Fare'].fillna(df['Fare'].median())
-    df['Embarked'] = df['Embarked'].fillna('S')
-    df['Embarked'] = df['Embarked'].map({'S': 0, 'C': 1, 'Q': 2})
-    return df
+    # Example: Fill missing ages with median
+    if 'Age' in df.columns:
+        df['Age'] = df['Age'].fillna(df['Age'].median())
+
+    # Example: Fill missing fares with median
+    if 'Fare' in df.columns:
+        df['Fare'] = df['Fare'].fillna(df['Fare'].median())
+
+    # Example: Drop columns not needed for ML (modify as needed)
+    drop_cols = ['Name', 'Ticket', 'Cabin']
+    for col in drop_cols:
+        if col in df.columns:
+            df = df.drop(col, axis=1)
+
+    # Save processed data
+    df.to_csv(output_path, index=False)
+    print(f"Data preprocessed and saved to {output_path}")
 
 if __name__ == "__main__":
-    train_df, test_df = load_data("data/raw_train.csv", "data/test.csv")
-    train_df = preprocess(train_df)
-    test_df = preprocess(test_df)
-    train_df.to_csv("data/train_processed.csv", index=False)
-    test_df.to_csv("data/test_processed.csv", index=False)
+    preprocess_data()
