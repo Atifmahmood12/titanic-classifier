@@ -1,7 +1,8 @@
 import pandas as pd
+import csv
 
 def load_and_clean_data(path='data/titanic.csv'):
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, quotechar='"', quoting=csv.QUOTE_MINIMAL)
     # Basic cleaning: fill missing, encode categorical
     df['Age'].fillna(df['Age'].median(), inplace=True)
     df['Embarked'].fillna('S', inplace=True)
