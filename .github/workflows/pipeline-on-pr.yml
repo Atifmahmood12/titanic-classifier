@@ -1,7 +1,7 @@
-name: Run Pipeline on Push
+name: Run Pipeline on Pull Request
 
 on:
-  push:
+  pull_request:
     branches:
       - main     # ← Change or add branches as needed
 
